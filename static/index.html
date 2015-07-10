@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ClassRoomChat</title>
+	<script type="text/javascript">
+		(function() {
+			if (!window["WebSocket"]) {
+				alert('Your browser does not support WebSockets!');
+				return;
+			}
+
+			wsConn = new WebSocket("ws://" + location.host + "/chat");
+			wsConn.onclose = function(event) {
+				console.log('WebSocket connection closed');
+			};
+
+			wsConn.onmessage = function(event) {
+				console.info('onMessage', event);
+			};
+
+			wsConn.onopen = function(event) {
+				wsConn.send('magix is closing now');
+			}
+		})();
+	</script>
+</head>
+<body>
+
+</body>
+</html>
