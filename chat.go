@@ -4,8 +4,8 @@ import "log"
 
 type chatHub struct {
 	clients map[*client]bool
-	pastMessages []string
-	inboundMessageChan chan string
+	pastMessages []clientMessage
+	inboundMessageChan chan clientMessage
 	registerClientChan chan *client
 	unregisterClientChan chan *client
 }
@@ -13,7 +13,7 @@ type chatHub struct {
 func NewChatHub() *chatHub {
 	chatHub := new(chatHub)
 	chatHub.clients = make(map[*client]bool)
-	chatHub.inboundMessageChan = make(chan string)
+	chatHub.inboundMessageChan = make(chan clientMessage)
 	chatHub.registerClientChan = make(chan *client)
 	chatHub.unregisterClientChan = make(chan *client)
 
@@ -36,11 +36,11 @@ func (chatHub *chatHub) loop() {
 func (chatHub *chatHub) registerClient(client *client) {
 	chatHub.clients[client] = true
 
-	for _, message := range chatHub.pastMessages {
-		client.send <- []byte(message)
+	for _, clientMessage := range chatHub.pastMessages {
+		client.send <- []byte(clientMessage.message)
 	}
 
-	log.Println("registered client", client)
+	log.Println("Registered client with address", client)
 }
 
 func (chatHub *chatHub) unregisterClient(client *client) {
@@ -50,18 +50,18 @@ func (chatHub *chatHub) unregisterClient(client *client) {
 
 	delete(chatHub.clients, client)
 	close(client.send)
-	log.Println("unregistered client", client)
+	log.Println("Unregistered client with address", client)
 }
 
-func (chatHub *chatHub) broadcastMessage(message string) {
-	log.Println("broadcastMessage", message)
+func (chatHub *chatHub) broadcastMessage(clientMessage clientMessage) {
+	log.Printf("Broadcast message from %s to %d clients | %s", clientMessage.sender, len(chatHub.clients), clientMessage.message)
 	for client := range chatHub.clients {
 		select {
-		case client.send <- []byte(message):
+		case client.send <- []byte(clientMessage.message):
 		default:
 			chatHub.unregisterClient(client)
 		}
 	}
 
-	chatHub.pastMessages = append(chatHub.pastMessages, message)
+	chatHub.pastMessages = append(chatHub.pastMessages, clientMessage)
 }
