@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 	"log"
+	"fmt"
 )
 
 const (
@@ -44,6 +45,7 @@ func (c *client) writeLoop() {
 	
 	defer func() {
 		pingTicker.Stop()
+		c.chatHub.unregisterClientChan <- c
 		c.webSocket.Close()
 	}()
 
@@ -93,11 +95,11 @@ func (c *client) readLoop() {
 	}	
 }
 
-type WebSocketHandler struct {
-	chatHub *chatHub
+func (c *client) String() string {
+	return fmt.Sprintf("%v", c.webSocket.RemoteAddr())
 }
 
-func (wsh *WebSocketHandler) ServeHTTP(response http.ResponseWriter, request *http.Request) {
+func (chatHub *chatHub) ServeHTTP(response http.ResponseWriter, request *http.Request) {
 	if request.Method != "GET" {
 		http.Error(response, "Method not allowed", 405)
 		return
@@ -108,7 +110,7 @@ func (wsh *WebSocketHandler) ServeHTTP(response http.ResponseWriter, request *ht
 		log.Println(err)
 	}
 
-	client := newClient(webSocket, wsh.chatHub)
+	client := newClient(webSocket, chatHub)
 	client.StartServing()
 }
 

@@ -14,7 +14,7 @@ var bindAddress = flag.String("addr", ":1338", "http service address")
 
 func setupHttpEndpoints(chatHub *chatHub) {
 	http.Handle("/", http.FileServer(http.Dir("static")))
-	http.Handle("/chat", &WebSocketHandler{chatHub: chatHub})
+	http.Handle("/chat", chatHub)
 }
 
 func main() {
