@@ -26,9 +26,9 @@ type client struct {
 	chatHub *chatHub
 }
 
-type clientMessage struct {
+type message struct {
 	sender *client
-	message string
+	content string
 }
 
 func newClient(webSocket *websocket.Conn, chatHub *chatHub) *client {
@@ -90,13 +90,13 @@ func (c *client) readLoop() {
 	c.webSocket.SetPongHandler(func(string) error { c.webSocket.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 
 	for {
-		_, message, err := c.webSocket.ReadMessage()
+		_, payload, err := c.webSocket.ReadMessage()
 		if err != nil {
 			break
 		}
 
 		//log.Println("Received message", messageType, string(message))
-		c.chatHub.inboundMessageChan <- clientMessage{c, string(message)}
+		c.chatHub.inboundMessageChan <- message{c, string(payload)}
 	}	
 }
 
