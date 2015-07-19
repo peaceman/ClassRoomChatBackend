@@ -50,6 +50,7 @@
 			ws.onmessage = function (event) {
 				var chatEntries = this.state.chatEntries;
 				var newChatEntries = chatEntries.concat([{time: new Date(), content: event}]);
+
 				this.setState({
 					chatEntries: newChatEntries
 				});
@@ -95,7 +96,7 @@
 			};
 		},
 		formatTimestamp: function() {
-			return this.state.dateTimeFormat.format(this.props.timestamp);
+			return this.state.dateTimeFormat.format(this.props.time);
 		},
 		render: function() {
 			return (
@@ -118,7 +119,9 @@
 	});
 
 	React.render(
-		<ChatBox />,
+		<div>
+		<ChatBox />
+		</div>,
 		document.getElementById('content')
 	);
 	</script>
