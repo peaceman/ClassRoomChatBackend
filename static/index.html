@@ -87,10 +87,20 @@
 	});
 
 	var ChatEntry = React.createClass({
+		getInitialState: function() {
+			var options = {hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false};
+
+			return {
+				dateTimeFormat: new Intl.DateTimeFormat(undefined, options)
+			};
+		},
+		formatTimestamp: function() {
+			return this.state.dateTimeFormat.format(this.props.timestamp);
+		},
 		render: function() {
 			return (
 				<li className="chatEntry">
-					<span className="timestamp">{new Intl.DateTimeFormat(undefined, {hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false}).format(this.props.time)}</span>
+					<span className="timestamp">{this.formatTimestamp()}</span>
 					<span className="message">{this.props.children}</span>
 				</li>
 			);
