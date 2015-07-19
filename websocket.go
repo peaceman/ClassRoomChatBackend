@@ -1,40 +1,41 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
+	"fmt"
+	"log"
 	"net/http"
 	"time"
-	"log"
-	"fmt"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
-	writeWait = 10 * time.Second
-	pongWait = 60 * time.Second
-	pingInterval = (pongWait * 9) / 10
+	writeWait      = 10 * time.Second
+	pongWait       = 60 * time.Second
+	pingInterval   = (pongWait * 9) / 10
 	maxMessageSize = 1024
 )
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize: maxMessageSize * 4,
+	ReadBufferSize:  maxMessageSize * 4,
 	WriteBufferSize: maxMessageSize * 4,
 }
 
 type client struct {
 	webSocket *websocket.Conn
-	send chan []byte
-	chatHub *chatHub
+	sendChan  chan []byte
+	chatHub   *chatHub
 }
 
 type message struct {
-	sender *client
+	sender  *client
 	content string
 }
 
 func newClient(webSocket *websocket.Conn, chatHub *chatHub) *client {
 	client := new(client)
 	client.webSocket = webSocket
-	client.send = make(chan []byte, maxMessageSize * 2)
+	client.sendChan = make(chan []byte, maxMessageSize*2)
 	client.chatHub = chatHub
 	return client
 }
@@ -47,7 +48,7 @@ func (c *client) StartServing() {
 
 func (c *client) writeLoop() {
 	pingTicker := time.NewTicker(pingInterval)
-	
+
 	defer func() {
 		pingTicker.Stop()
 		c.chatHub.unregisterClientChan <- c
@@ -61,7 +62,7 @@ func (c *client) writeLoop() {
 				log.Println("writeLoop", err)
 				return
 			}
-		case message, ok := <-c.send:
+		case message, ok := <-c.sendChan:
 			if !ok {
 				c.write(websocket.CloseMessage, []byte{})
 				return
@@ -95,9 +96,8 @@ func (c *client) readLoop() {
 			break
 		}
 
-		//log.Println("Received message", messageType, string(message))
 		c.chatHub.inboundMessageChan <- message{c, string(payload)}
-	}	
+	}
 }
 
 func (c *client) String() string {
@@ -118,4 +118,3 @@ func (chatHub *chatHub) ServeHTTP(response http.ResponseWriter, request *http.Re
 	client := newClient(webSocket, chatHub)
 	client.StartServing()
 }
-
