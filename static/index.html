@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="styles.css">
 	<script src="react-0.13.3.js"></script>
 	<script src="JSXTransformer-0.13.3.js"></script>
+	<script src="qrcode.js"></script>
 	<script type="text/javascript">
 		(function() {
 			if (!window["WebSocket"]) {
@@ -16,7 +17,16 @@
 	</script>
 </head>
 <body>
+	<div id="qrcode"></div>
 	<div id="content"></div>
+	<script type="text/javascript">
+		(function() {
+			new QRCode(document.getElementById("qrcode"), {
+				text: location.host,
+				correctLevel: QRCode.CorrectLevel.H
+			});
+		})();
+	</script>
 	<script type="text/jsx">
 	var ChatBox = React.createClass({
 		getInitialState: function() {
@@ -43,6 +53,7 @@
 				this.setState({
 					chatEntries: newChatEntries
 				});
+
 			}.bind(this);
 		},
 		render: function() {
