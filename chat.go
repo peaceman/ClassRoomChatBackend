@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"encoding/json"
+	"log"
+)
 
 type chatHub struct {
 	clients              map[*client]bool
@@ -43,7 +46,13 @@ func (chatHub *chatHub) registerClient(client *client) {
 
 func (chatHub *chatHub) sendPastMessagesToClient(receiver *client) {
 	for _, msg := range chatHub.pastMessages {
-		receiver.sendChan <- []byte(msg.content)
+		jsonString, err := json.Marshal(msg)
+		if err != nil {
+			log.Println("Failed to marshal message:", msg)
+			return
+		}
+
+		receiver.sendChan <- jsonString
 	}
 }
 
@@ -58,10 +67,17 @@ func (chatHub *chatHub) unregisterClient(client *client) {
 }
 
 func (chatHub *chatHub) broadcastMessage(msg message) {
-	log.Printf("Broadcast message from %s to %d clients | %s", msg.sender, len(chatHub.clients), msg.content)
+	log.Printf("Broadcast message from %s to %d clients | %s", msg.sender, len(chatHub.clients), msg.Content)
+
+	jsonString, err := json.Marshal(msg)
+	if err != nil {
+		log.Println("Failed to marshal message:", msg)
+		return
+	}
+
 	for client := range chatHub.clients {
 		select {
-		case client.sendChan <- []byte(msg.content):
+		case client.sendChan <- jsonString:
 		default:
 			chatHub.unregisterClient(client)
 		}

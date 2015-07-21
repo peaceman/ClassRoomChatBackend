@@ -29,7 +29,8 @@ type client struct {
 
 type message struct {
 	sender  *client
-	content string
+	Time    time.Time
+	Content string
 }
 
 func newClient(webSocket *websocket.Conn, chatHub *chatHub) *client {
@@ -96,7 +97,7 @@ func (c *client) readLoop() {
 			break
 		}
 
-		c.chatHub.inboundMessageChan <- message{c, string(payload)}
+		c.chatHub.inboundMessageChan <- message{c, time.Now(), string(payload)}
 	}
 }
 
