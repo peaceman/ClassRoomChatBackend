@@ -48,8 +48,16 @@
 			var ws = new WebSocket('ws://' + location.host + '/chat');
 
 			ws.onmessage = function (event) {
+				var message = JSON.parse(event.data, function(key, value) {
+					if (key === 'Time') {
+						value = new Date(value);
+					}
+
+					return value;
+				});
+
 				var chatEntries = this.state.chatEntries;
-				var newChatEntries = chatEntries.concat([{time: new Date(), content: event}]);
+				var newChatEntries = chatEntries.concat([message]);
 
 				this.setState({
 					chatEntries: newChatEntries
@@ -71,8 +79,8 @@
 		render: function() {
 			var chatEntryNodes = this.props.chatEntries.map(function (chatEntry) {
 				return (
-					<ChatEntry time={chatEntry.time}>
-						{chatEntry.content}
+					<ChatEntry time={chatEntry.Time}>
+						{chatEntry.Content}
 					</ChatEntry>
 				);
 			});
