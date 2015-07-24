@@ -19,6 +19,10 @@ li.chatEntry {
     font-family: monospace;
 }
 
+.chatEntryList > ul li:nth-child(odd) {
+    background-color: antiquewhite;
+}
+
 #qrcode {
     position: fixed;
     right: 2em;
