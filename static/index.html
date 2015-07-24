@@ -66,6 +66,10 @@
 	});
 
 	var ChatEntryList = React.createClass({
+		componentDidUpdate: function() {
+			var node = this.getDOMNode();
+			window.scrollTo(0, node.scrollHeight);
+		},
 		render: function() {
 			var chatEntryNodes = this.props.chatEntries.map(function (chatEntry) {
 				return (
