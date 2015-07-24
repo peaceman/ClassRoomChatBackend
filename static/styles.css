@@ -8,6 +8,17 @@ li.chatEntry > .timestamp::after {
     content: " ";
 }
 
+li.chatEntry > .timestamp {
+    margin-right: 1em;
+    color: darkgray;
+}
+
+li.chatEntry {
+    display: flex;
+    font-size: 2em;
+    font-family: monospace;
+}
+
 #qrcode {
     position: fixed;
     right: 2em;

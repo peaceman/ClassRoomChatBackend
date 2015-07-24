@@ -59,7 +59,6 @@
 		render: function() {
 			return (
 				<div className="chatBox">
-					<h1>god day! here is ChatBox.</h1>
 					<ChatEntryList chatEntries={this.state.chatEntries} />
 				</div>
 			);
@@ -100,8 +99,8 @@
 		render: function() {
 			return (
 				<li className="chatEntry">
-					<span className="timestamp">{this.formatTimestamp()}</span>
-					<span className="message">{this.props.children}</span>
+					<div className="timestamp">{this.formatTimestamp()}</div>
+					<div className="message">{this.props.children}</div>
 				</li>
 			);
 		}
