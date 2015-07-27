@@ -20,16 +20,21 @@
 	<script type="text/jsx">
     var PhoneList = React.createClass({
         getInitialState: function() {
-            return {phones: []};
+            return {
+                phones: [],
+                selectedPhoneIdx: null
+            };
         },
         componentDidMount: function() {
             this.openWebSocket();
         },
         openWebSocket: function() {
             var ws = new WebSocket('ws://' + location.host + '/data');
+            var lastPhoneId = 0;
 
             ws.onmessage = function(event) {
                 var phoneData = JSON.parse(event.data);
+                phoneData.id = lastPhoneId++;
 
                 var phones = this.state.phones;
                 var newPhones = phones.concat([phoneData]);
@@ -39,19 +44,75 @@
                 });
             }.bind(this);
         },
-        render: function() {
-            var phoneNodes = this.state.phones.map(function (phone) {
-                return (
-                    <li>
-                        <code>{JSON.stringify(phone)}</code>
-                    </li>
-                );
+        handleDeleteClick: function(idx) {
+            var phones = this.state.phones;
+            phones.splice(idx, 1);
+
+            this.setState({
+                phones: phones
             });
+        },
+        render: function() {
+            var phoneNodes = this.state.phones.map(function (phone, idx) {
+                return (
+                    <PhoneListEntry key={phone.id} phone={phone} handleDeleteClick={this.handleDeleteClick.bind(this, idx)}/>
+                );
+            }, this);
 
             return (
                 <ul>
                     {phoneNodes}
                 </ul>
+            );
+        }
+    });
+
+    var PhoneListEntry = React.createClass({
+        getInitialState: function() {
+            return {displayContacts: false};
+        },
+        handleClick: function(event) {
+            this.setState({displayContacts: !this.state.displayContacts});
+        },
+        render: function() {
+            var phone = this.props.phone;
+            var contactList = this.state.displayContacts
+                ? (<ContactList contacts={phone.Contacts} />)
+                : null;
+
+            return (
+                <li>
+                    <span onClick={this.handleClick}>
+                        {phone.Build.Manufacturer} {phone.Build.Model} ({phone.PhoneNumber ? phone.PhoneNumber : 'No PhoneNumber'})
+                    </span>
+                    <button onClick={this.props.handleDeleteClick}>Delete</button>
+                    {contactList}
+                </li>
+            );
+        }
+    });
+
+    var ContactList = React.createClass({
+        render: function() {
+            var contactNodes = this.props.contacts.map(function(contact) {
+                return (
+                    <tr>
+                        <td>{contact.DisplayName}</td>
+                        <td>{contact.Number}</td>
+                    </tr>
+                );
+            });
+
+            return (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DisplayName</th>
+                            <th>Number</th>
+                        </tr>
+                    </thead>
+                    {contactNodes}
+                </table>
             );
         }
     });
