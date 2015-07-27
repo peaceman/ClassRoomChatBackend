@@ -114,6 +114,7 @@ func (chatHub *chatHub) ServeHTTP(response http.ResponseWriter, request *http.Re
 	webSocket, err := upgrader.Upgrade(response, request, nil)
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	client := newClient(webSocket, chatHub)
