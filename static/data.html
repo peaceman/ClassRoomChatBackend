@@ -32,7 +32,7 @@
                 var phoneData = JSON.parse(event.data);
 
                 var phones = this.state.phones;
-                var newPhones = chatEntries.concat([phoneData]);
+                var newPhones = phones.concat([phoneData]);
 
                 this.setState({
                     phones: newPhones
