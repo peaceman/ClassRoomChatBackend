@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>ClassRoomChat Data</title>
+	<link rel="stylesheet" href="styles.css">
+	<script src="react-0.13.3.js"></script>
+	<script src="JSXTransformer-0.13.3.js"></script>
+	<script type="text/javascript">
+		(function() {
+			if (!window["WebSocket"]) {
+				alert('Your browser does not support WebSockets!');
+				return;
+			}
+		})();
+	</script>
+</head>
+<body>
+	<div id="content"></div>
+	<script type="text/jsx">
+    var PhoneList = React.createClass({
+        getInitialState: function() {
+            return {phones: []};
+        },
+        componentDidMount: function() {
+            this.openWebSocket();
+        },
+        openWebSocket: function() {
+            var ws = new WebSocket('ws://' + location.host + '/data');
+
+            ws.onmessage = function(event) {
+                var phoneData = JSON.parse(event.data);
+
+                var phones = this.state.phones;
+                var newPhones = chatEntries.concat([phoneData]);
+
+                this.setState({
+                    phones: newPhones
+                });
+            }.bind(this);
+        },
+        render: function() {
+            var phoneNodes = this.state.phones.map(function (phone) {
+                return (
+                    <li>
+                        <code>{JSON.stringify(phone)}</code>
+                    </li>
+                );
+            });
+
+            return (
+                <ul>
+                    {phoneNodes}
+                </ul>
+            );
+        }
+    });
+
+	React.render(
+		<div>
+		<PhoneList />
+		</div>,
+		document.getElementById('content')
+	);
+	</script>
+</body>
+</html>
