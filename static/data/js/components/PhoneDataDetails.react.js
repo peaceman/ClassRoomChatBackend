@@ -19,7 +19,7 @@ var PhoneDataDetails = React.createClass({
         });
 
         return (
-            <table>
+            <table className="table table-condensed table-striped">
                 <thead>
                     <tr>
                         <th>DisplayName</th>

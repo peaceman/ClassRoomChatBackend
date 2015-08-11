@@ -11,7 +11,7 @@ var _selectedPhoneDataId = null;
 function create(phoneData) {
     // Using the current timestamp + random number in place of a real id.
     var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
-    _phoneDataItems[id] = assign({}, phoneData, {id: id});
+    _phoneDataItems[id] = assign({}, phoneData, {id: id, isSelected: false});
 }
 
 function destroy(id) {
@@ -23,10 +23,14 @@ function destroy(id) {
 }
 
 function select(id) {
+    if (_selectedPhoneDataId !== null) {
+        _phoneDataItems[_selectedPhoneDataId].isSelected = false;
+    }
     if (_selectedPhoneDataId === id) {
         _selectedPhoneDataId = null;
     } else {
         _selectedPhoneDataId = id;
+        _phoneDataItems[id].isSelected = true;
     }
 }
 

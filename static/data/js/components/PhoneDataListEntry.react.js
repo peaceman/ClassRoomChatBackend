@@ -1,5 +1,6 @@
 var React = require('react');
 var PhoneDataActions = require('../actions/PhoneDataActions');
+var classNames = require('classnames');
 
 var PhoneDataListEntry = React.createClass({
     propTypes: {
@@ -8,13 +9,18 @@ var PhoneDataListEntry = React.createClass({
     render: function() {
         var phone = this.props.phoneData;
 
+        var tableRowClasses = classNames({
+            active: phone.isSelected
+        });
+
         return (
-            <li>
-                <span onClick={this._onToggleSelection}>
-                    {phone.PhoneNumber} >> {phone.Build.Manufacturer} {phone.Build.Model}
-                </span>
-                <button onClick={this._onDestroyClick}>Delete</button>
-            </li>
+            <tr onClick={this._onToggleSelection} className={tableRowClasses}>
+                <td>{phone.PhoneNumber}</td>
+                <td>{phone.Build.Manufacturer} {phone.Build.Model}</td>
+                <td>
+                    <button className="btn btn-danger btn-xs" onClick={this._onDestroyClick}>Delete</button>
+                </td>
+            </tr>
         );
     },
     _onToggleSelection: function() {
@@ -22,6 +28,7 @@ var PhoneDataListEntry = React.createClass({
     },
     _onDestroyClick: function() {
         PhoneDataActions.destroy(this.props.phoneData.id);
+        return false; // end further onClick event handling
     }
 });
 

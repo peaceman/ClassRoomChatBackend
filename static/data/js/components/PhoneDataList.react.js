@@ -13,7 +13,18 @@ var PhoneDataList = React.createClass({
         }
 
         return (
-            <ul id="phone-data-list">{phoneDataNodes}</ul>
+            <table className="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Model</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {phoneDataNodes}
+                </tbody>
+            </table>
         );
     }
 });

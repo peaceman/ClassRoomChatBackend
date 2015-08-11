@@ -25,9 +25,20 @@ var ClassRoomChatDataApp = React.createClass({
     },
     render: function() {
         return (
-            <div>
-                <PhoneDataList phoneDataItems={this.state.allPhoneDataItems} />
-                <PhoneDataDetails phoneDataItem={this.state.selectedPhoneDataItem} />
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="page-header">
+                        <h4>PhoneDataList</h4>
+                    </div>
+                    <PhoneDataList phoneDataItems={this.state.allPhoneDataItems} />
+                </div>
+
+                <div className="col-md-6">
+                    <div className="page-header">
+                        <h4>PhoneDataDetails</h4>
+                    </div>
+                    <PhoneDataDetails phoneDataItem={this.state.selectedPhoneDataItem} />
+                </div>
             </div>
         );
     }
