@@ -18,18 +18,32 @@ var PhoneDataDetails = React.createClass({
             );
         });
 
+        var pictureNodes = phoneData.Pictures.map(function(base64WebPString) {
+            var src = "data:image/jpeg;base64," + base64WebPString;
+            return (
+                <li>
+                    <img className="col-xs-6 col-md-6" src={src}/>
+                </li>
+            );
+        });
+
         return (
-            <table className="table table-condensed table-striped">
-                <thead>
-                    <tr>
-                        <th>DisplayName</th>
-                        <th>Number</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {contactNodes}
-                </tbody>
-            </table>
+            <div>
+                <ul className="list-unstyled row">
+                    {pictureNodes}
+                </ul>
+                <table className="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>DisplayName</th>
+                            <th>Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {contactNodes}
+                    </tbody>
+                </table>
+            </div>
         );
     }
 });
