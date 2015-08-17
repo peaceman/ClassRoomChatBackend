@@ -6,6 +6,8 @@
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
         <style type="text/css">
             body { padding-top: 70px; }
+            span.email-list-entry:not(:last-child):after { content: ",\A "; }
+            span.email-list-entry { white-space:pre; }
         </style>
     </head>
     <body>

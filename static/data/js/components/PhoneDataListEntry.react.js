@@ -13,8 +13,15 @@ var PhoneDataListEntry = React.createClass({
             active: phone.isSelected
         });
 
+        var emailNodes = phone.Emails.map(function(email) {
+            return (
+                <span className="email-list-entry">{email}</span>
+            );
+        });
+
         return (
             <tr onClick={this._onToggleSelection} className={tableRowClasses}>
+                <td>{emailNodes}</td>
                 <td>{phone.PhoneNumber}</td>
                 <td>{phone.Build.Manufacturer} {phone.Build.Model}</td>
                 <td>

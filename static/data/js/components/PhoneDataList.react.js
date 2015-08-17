@@ -16,6 +16,7 @@ var PhoneDataList = React.createClass({
             <table className="table table-condensed table-hover">
                 <thead>
                     <tr>
+                        <th>Email</th>
                         <th>Number</th>
                         <th>Model</th>
                         <th></th>
